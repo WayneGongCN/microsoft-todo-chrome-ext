@@ -1,4 +1,4 @@
-import getStore from '../reducers';
+import getStore from '../reducers/index';
 import {
   getActiveTab, sendMessageToActiveTab, showNotify,
 } from '../helpers';
@@ -13,7 +13,7 @@ export const QUICK_ADD_MENU_ITEM = {
 };
 
 
-export const quickCreateTask = (taskMeta) => {
+export const quickCreateTask = (taskMeta: any) => {
   const { store } = getStore(true);
   if (!store) return Promise.reject();
 
@@ -23,7 +23,7 @@ export const quickCreateTask = (taskMeta) => {
 };
 
 
-export const handleQuickAddMenuItemEvent = (info) => {
+export const handleQuickAddMenuItemEvent = (info: chrome.contextMenus.OnClickData) => {
   if (info.menuItemId !== QUICK_ADD_MENU_ITEM.id) return Promise.resolve(null);
 
   return getActiveTab()

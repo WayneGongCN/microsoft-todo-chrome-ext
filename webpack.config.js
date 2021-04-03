@@ -23,9 +23,9 @@ module.exports = (env) => ({
   devtool: 'cheap-module-source-map',
 
   entry: {
-    background: './src/background/index.js',
-    popup: './src/popup.jsx',
-    options: './src/options.jsx',
+    background: './src/background.ts',
+    popup: './src/popup.tsx',
+    options: './src/options.tsx',
     content: './src/content.js',
   },
 
@@ -36,19 +36,17 @@ module.exports = (env) => ({
 
   module: {
     rules: [
-      {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        loader: 'babel-loader',
-        options: { presets: ['@babel/env'] },
-      },
+      { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
+      { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
       },
     ],
   },
-  resolve: { extensions: ['*', '.js', '.jsx'] },
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+  },
 
   plugins: [
     /**
@@ -77,8 +75,8 @@ module.exports = (env) => ({
 
     new CopyPlugin({
       patterns: [
-        // build manifest.json with 'src/manifest/index.js'
-        { from: 'src/manifest/index.js', to: 'manifest.json', transform: () => JSON.stringify(manifest(env)) },
+        // build manifest.json with 'src/manifest.js'
+        { from: 'src/manifest.js', to: 'manifest.json', transform: () => JSON.stringify(manifest(env)) },
 
         // copy icons to dist/icons
         { from: 'public/icons', to: 'icons/' },
@@ -88,4 +86,9 @@ module.exports = (env) => ({
     // Clean the dist directory before building
     new CleanWebpackPlugin(),
   ],
+
+  externals: {
+    react: 'React',
+    'react-dom': 'ReactDOM',
+  },
 });
